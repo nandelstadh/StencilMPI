@@ -35,7 +35,6 @@ int main(int argc, char** argv) {
     MPI_Bcast(&global_num_values, 1, MPI_INT, 0, MPI_COMM_WORLD);
     num_values = global_num_values / p;
 
-    printf("Number of values locally is: %d\n", num_values);
     input = malloc(sizeof(double) * num_values);
 
     MPI_Scatter(global_input, num_values, MPI_DOUBLE, input, num_values, MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -65,9 +64,6 @@ int main(int argc, char** argv) {
     double high_s_buf[EXTENT];
     double low_s_buf[EXTENT];
 
-    printf("Higher processor: %d\n", (myid + 1 + p) % p);
-    printf("Lower processor: %d\n", (myid - 1 + p) % p);
-    printf("%f\n", high_s_buf[0]);
     MPI_Recv_init(high_r_buf, EXTENT, MPI_DOUBLE, (myid + 1 + p) % p, 1, MPI_COMM_WORLD, &recv_higher);
     MPI_Recv_init(low_r_buf, EXTENT, MPI_DOUBLE, (myid - 1 + p) % p, 0, MPI_COMM_WORLD, &recv_lower);
     MPI_Send_init(high_s_buf, EXTENT, MPI_DOUBLE, (myid + 1 + p) % p, 0, MPI_COMM_WORLD, &send_higher);
@@ -87,8 +83,6 @@ int main(int argc, char** argv) {
         MPI_Wait(&recv_higher, &stat);
         MPI_Wait(&recv_lower, &stat);
 
-        printf("EXTENT: %d\n", EXTENT);
-
         for (int i = 0; i < num_values; i++) {
             double result = 0;
             for (int j = 0; j < STENCIL_WIDTH; j++) {
@@ -105,38 +99,6 @@ int main(int argc, char** argv) {
             }
             output[i] = result;
         }
-        /* for (int i = 0; i < EXTENT; i++) { */
-        /*     double result = 0; */
-        /*     for (int j = i; j < EXTENT; j++) { */
-        /*         result += STENCIL[j] * low_r_buf[j + i]; */
-        /*     } */
-        /*     for (int j = EXTENT - i; j < STENCIL_WIDTH; j++) { */
-        /*         int index = (i - EXTENT + j + num_values) % num_values; */
-        /*         result += STENCIL[j] * input[index]; */
-        /*     } */
-        /*     output[i] = result; */
-        /* } */
-        /* // The logic here should remain unchanged */
-        /* for (int i = EXTENT; i < num_values - EXTENT; i++) { */
-        /*     double result = 0; */
-        /*     for (int j = 0; j < STENCIL_WIDTH; j++) { */
-        /*         int index = i - EXTENT + j; */
-        /*         result += STENCIL[j] * input[index]; */
-        /*     } */
-        /*     output[i] = result; */
-        /* } */
-        // The logic here should be changed so that it exchanges data with node (my_id + 1)
-        /* for (int i = num_values - EXTENT; i < num_values; i++) { */
-        /*     double result = 0; */
-        /*     for (int j = 0; j < STENCIL_WIDTH; j++) { */
-        /*         int index = (i - EXTENT + j) % num_values; */
-        /*         result += STENCIL[j] * input[index]; */
-        /*     } */
-        /*     for (int j = STENCIL_WIDTH - EXTENT; j < STENCIL_WIDTH; j++) { */
-        /*         result += STENCIL[j] * high_r_buf[j - STENCIL_WIDTH + EXTENT + i]; */
-        /*     } */
-        /*     output[i] = result; */
-        /* } */
 
         // Swap input and output
         if (s < num_steps - 1) {
