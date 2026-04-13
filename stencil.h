@@ -14,7 +14,7 @@
 #define _ASSIGNMENT1_STENCIL_H_
 
 #define PI 3.14159265358979323846
-#define PRODUCE_OUTPUT_FILE
+// #define PRODUCE_OUTPUT_FILE
 
 #include <mpi.h>
 #include <stdio.h>
@@ -29,7 +29,7 @@
  * @param values Pointer to array where the values are to be stored
  * @return 0 on success, -1 on error
  */
-int read_input(const char *file_name, double **values);
+int read_input(const char* file_name, double** values);
 
 /**
  * Write function data to a file, with 4 decimal places. The values are
@@ -39,6 +39,6 @@ int read_input(const char *file_name, double **values);
  * @param num_values Number of values to print
  * @return 0 on success, -1 on error
  */
-int write_output(char *file_name, const double *output, int num_values);
+int write_output(char* file_name, const double* output, int num_values);
 
 #endif /* _ASSIGNMENT1_STENCIL_H_ */

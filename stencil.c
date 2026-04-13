@@ -125,7 +125,7 @@ int main(int argc, char** argv) {
 
     // Write result
     if (myid == 0) {
-        printf("%f\n", global_execution_time);
+        printf("%d,%d,%f\n", global_num_values, p, global_execution_time);
 #ifdef PRODUCE_OUTPUT_FILE
         if (0 != write_output(output_name, global_output, global_num_values)) {
             return 2;

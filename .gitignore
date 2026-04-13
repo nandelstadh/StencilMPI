@@ -1,5 +1,5 @@
 output.txt
 *.dSYM
 stencil
-Tests
 check_A2.sh
+Data
